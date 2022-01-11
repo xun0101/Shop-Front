@@ -1,18 +1,33 @@
-<template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+<template lang="pug">
+b-container#home
+  b-row
+    b-col(cols='12' md='6' lg='3' v-for='product in products' :key='product._id')
+      ProductCard(:product='product')
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import ProductCard from '../components/ProductCard.vue'
 
 export default {
-  name: 'Home',
   components: {
-    HelloWorld
+    ProductCard
+  },
+  data () {
+    return {
+      products: []
+    }
+  },
+  async created () {
+    try {
+      const { data } = await this.api.get('/products')
+      this.products = data.result
+    } catch (error) {
+      this.$swal({
+        icon: 'error',
+        title: '錯誤',
+        text: '商品取得失敗'
+      })
+    }
   }
 }
 </script>
